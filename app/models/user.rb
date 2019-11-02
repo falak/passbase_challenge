@@ -3,4 +3,11 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+  
+  has_many :accounts
+  has_and_belongs_to_many :transfers, :join_table => "transfers_users"
+
+  def send_money
+    
+  end
 end

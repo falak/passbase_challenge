@@ -49,6 +49,8 @@ Run
 
 ### Database initialization
 
+Run
+
 	$ rails db:migrate
 
 	$ rails db:seed
