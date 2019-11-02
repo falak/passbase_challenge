@@ -1,4 +1,5 @@
 class TransfersController < ApplicationController
+  include TransfersHelper
   before_action :authenticate_user!
   before_action :set_transfer, only: [:show, :edit, :update, :destroy]
 
@@ -26,16 +27,21 @@ class TransfersController < ApplicationController
   # POST /transfers.json
   def create
     @transfer = Transfer.new(transfer_params)
-
+    @transfer.process_transaction current_user, params
     respond_to do |format|
-      if @transfer.save
-        format.html { redirect_to @transfer, notice: 'Transfer was successfully created.' }
-        format.json { render :show, status: :created, location: @transfer }
+      if @transfer.errors.blank?
+        format.html { redirect_to @transfer, notice: 'Transfer was successful' }
+        format.json { render :show, status: :ok, location: @transfer }
       else
-        format.html { render :new }
+        receiver = User.find params[:user_id].to_i
+        receiver_account = receiver.accounts.find_by currency_type: params[:currency].downcase
+        failed_transaction=Transfer.create value: params[:transfer][:value].to_f, transaction_status: false
+        receiver.transfers << failed_transaction
+        receiver_account.transfers << failed_transaction
+        format.html { render :edit }
         format.json { render json: @transfer.errors, status: :unprocessable_entity }
       end
-    end
+    end  
   end
 
   # PATCH/PUT /transfers/1
