@@ -55,6 +55,14 @@ Run
 
 	$ rails db:seed
 
+### Usage Instructions
+
+Run
+
+	$ rails s
+
+Get User credentials from seed file where user A and B is intialized with 1000 USD.
+
 ### Testing
 
 	$ rails test
