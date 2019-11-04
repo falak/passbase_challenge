@@ -6,8 +6,10 @@
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name(:id) %></th>
-      <th>[Sender , Receiver]</th>
+      <th>From</th>
+      <th>to</th>
       <th><%= model_class.human_attribute_name(:value) %></th>
+      <th>Currency</th>
       <th><%= model_class.human_attribute_name(:transaction_status) %></th>
       <th><%= model_class.human_attribute_name(:created_at) %></th>
       <th><%= model_class.human_attribute_name(:updated_at) %></th>
@@ -17,8 +19,14 @@
     <% @transfers.each do |transfer| %>
       <tr>
         <td><%= link_to transfer.id, transfer_path(transfer) %></td>
-        <td><%= transfer.users.pluck(:name) %></td>
-        <td><%= transfer.value %></td>
+        <td><%= transfer.sender_name %></td>
+        <td><%= transfer.receiver_name %></td>
+        <% if transfer.sender_name == current_user.name  %>
+          <td>-<%= transfer.value %></td>
+        <% else %>
+          <td>+<%= transfer.value %></td>
+        <% end %>
+        <td><%= transfer.currency_type %></td>
         <% if transfer.transaction_status== true %>
           <td>Successful</td>
         <% else %>

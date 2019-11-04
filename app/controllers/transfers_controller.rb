@@ -33,9 +33,11 @@ class TransfersController < ApplicationController
         format.html { redirect_to @transfer, notice: 'Transfer was successful' }
         format.json { render :show, status: :ok, location: @transfer }
       else
-        receiver = User.find params[:user_id].to_i
-        receiver_account = receiver.accounts.find_by currency_type: params[:currency].downcase
-        failed_transaction=Transfer.create value: params[:transfer][:value].to_f, transaction_status: false
+        receiver = User.find params[:transfer][:receiver_name].to_i
+        sender_account = current_user.accounts.find params[:sender_account_id]
+        receiver_account = receiver.accounts.find_by currency_type: params[:receiver_currency_type].downcase
+        amount = @transfer.process_currency(sender_account,receiver_account,params[:transfer][:value].to_f) 
+        failed_transaction=Transfer.create!(value: amount, transaction_status: false,sender_name: params[:transfer][:sender_name],receiver_name: receiver.name,currency_type: receiver_account.currency_type)
         receiver.transfers << failed_transaction
         receiver_account.transfers << failed_transaction
         format.html { render :edit }
@@ -76,6 +78,6 @@ class TransfersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def transfer_params
-      params.require(:transfer).permit(:value, :transaction_status)
+      params.require(:transfer).permit(:value, :transaction_status, :sender_name, :receiver_name, :currency_type)
     end
 end

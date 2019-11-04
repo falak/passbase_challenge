@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_02_152216) do
+ActiveRecord::Schema.define(version: 2019_11_04_013318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,9 @@ ActiveRecord::Schema.define(version: 2019_11_02_152216) do
     t.boolean "transaction_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "sender_name", default: ""
+    t.string "receiver_name", default: ""
+    t.string "currency_type", default: ""
   end
 
   create_table "transfers_users", id: false, force: :cascade do |t|
